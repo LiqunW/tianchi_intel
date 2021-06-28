@@ -3,14 +3,14 @@ import os
 import csv
 import multiprocessing
 
-out_dir = 'train_img'
+out_dir = '../dataset/img_data/test/images'
 os.makedirs(out_dir, exist_ok=True)
-out_label_dir = 'train_label'
+out_label_dir = '../dataset/img_data/test/labels'
 os.makedirs(out_label_dir, exist_ok=True)
 
 def download_img(img_url):
     os.system('wget -P {} {} '.format(out_dir, img_url))
-    
+    # wget.download(img_url, out=out_dir)
     
 def parse_csv(csv_path):
     res = []
@@ -29,6 +29,23 @@ def parse_csv(csv_path):
                 continue
     return res, label_res
 
+
+def parse_csv_test(csv_path):
+    res = []
+    label_res = {}
+    with open(csv_path, 'r', encoding='utf-8') as f:
+        rows = csv.reader(f)
+        for row in rows:
+            try:
+                tmp_dic = eval(row[1])
+                img_url = tmp_dic['tfspath']
+                # img_name = img_url.split('/')[-1]
+
+                res.append(img_url)
+
+            except:
+                continue
+    return res, label_res
 
 def save_label(label_info):
     for k, v in label_info.items():
@@ -53,14 +70,13 @@ def save_label(label_info):
                                txt_info['text'] + '\t' + 'NoDirection' + '\n'
                 f.write(tmp_line)
                 idx += 1
-                
 
 
 if __name__ == "__main__":
     
-    img_url, labels = parse_csv(r'csv_data/Xeon1OCR_round1_train_20210524.csv')
+    img_url, labels = parse_csv_test(r'../dataset/csv_data/test/Xeon1OCR_round1_test3_20210528.csv')
     
-    save_label(labels)
+    # save_label(labels)
     
-    # with multiprocessing.Pool(processes=6) as p:
-    #     p.map(download_img, img_url)
+    with multiprocessing.Pool(processes=6) as p:
+         p.map(download_img, img_url)
