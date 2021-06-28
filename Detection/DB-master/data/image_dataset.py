@@ -1,13 +1,16 @@
+# coding: utf-8
 import functools
 import logging
 import bisect
-
+import platform
 import torch.utils.data as data
 import cv2
 import numpy as np
 import glob
 from concern.config import Configurable, State
 import math
+
+SYS_str = platform.system()
 
 class ImageDataset(data.Dataset, Configurable):
     r'''Dataset reading from images.
@@ -57,6 +60,7 @@ class ImageDataset(data.Dataset, Configurable):
         res = []
         for gt in self.gt_paths:
             lines = []
+            gt = gt.replace('\\', '/')
             reader = open(gt, 'r').readlines()
             for line in reader:
                 item = {}

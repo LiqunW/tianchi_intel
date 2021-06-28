@@ -20,7 +20,7 @@ class Logger(Configurable):
     ARGS_FILE_NAME = 'args.log'
     METRICS_FILE_NAME = 'metrics.log'
 
-    database_dir = State(default='./outputs/')
+    database_dir = State(default='outputs')
     log_dir = State(default='workspace')
     verbose = State(default=False)
     level = State(default='info')
