@@ -111,7 +111,7 @@ PaddleOCR同时支持动态图与静态图两种编程范式
     - [垂类多语言OCR数据集](./doc/doc_ch/vertical_and_multilingual_datasets.md)
 - 数据标注与合成
     - [半自动标注工具PPOCRLabel](./PPOCRLabel/README_ch.md)
-    - [数据合成工具Style-Text](./StyleText/README_ch.md)
+    - [数据合成工具Style-Text](../../../data_generator/StyleText/README_ch.md)
     - [其它数据标注工具](./doc/doc_ch/data_annotation.md)
     - [其它数据合成工具](./doc/doc_ch/data_synthesis.md)
 - [效果展示](#效果展示)

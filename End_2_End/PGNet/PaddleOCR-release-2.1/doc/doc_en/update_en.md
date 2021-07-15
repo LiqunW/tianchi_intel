@@ -1,5 +1,5 @@
 # RECENT UPDATES
-- 2020.12.15 update Data synthesis tool, i.e., [Style-Text](../../StyleText/README.md)，easy to synthesize a large number of images which are similar to the target scene image.
+- 2020.12.15 update Data synthesis tool, i.e., [Style-Text](../../../../../data_generator/StyleText/README.md)，easy to synthesize a large number of images which are similar to the target scene image.
 - 2020.11.25 Update a new data annotation tool, i.e., [PPOCRLabel](../../PPOCRLabel/README.md), which is helpful to improve the labeling efficiency. Moreover, the labeling results can be used in training of the PP-OCR system directly.
 - 2020.9.22 Update the PP-OCR technical article, https://arxiv.org/abs/2009.09941
 - 2020.9.19 Update the ultra lightweight compressed ppocr_mobile_slim series models, the overall model size is 3.5M, suitable for mobile deployment.
