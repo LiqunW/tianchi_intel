@@ -30,7 +30,7 @@ define:
             class: DataLoader
             dataset: ^train_data
             batch_size: 16
-            num_workers: 16
+            num_workers: 4
         checkpoint: 
             class: Checkpoint
             start_epoch: 0
@@ -60,7 +60,7 @@ define:
                 class: DataLoader
                 dataset: ^validate_data
                 batch_size: 1
-                num_workers: 16
+                num_workers: 4
                 collect_fn:
                     class: ICDARCollectFN
         visualize: false
@@ -71,6 +71,6 @@ define:
         class: Logger
         verbose: true
         level: info
-        log_interval: 450
+        log_interval: 50
 
     evaluation: *validate

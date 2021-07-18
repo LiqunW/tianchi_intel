@@ -21,7 +21,7 @@ class Logger(Configurable):
     METRICS_FILE_NAME = 'metrics.log'
 
     database_dir = State(default='outputs')
-    log_dir = State(default='workspace')
+    log_dir = State(default='workspaces')
     verbose = State(default=False)
     level = State(default='info')
     log_interval = State(default=100)
@@ -29,11 +29,11 @@ class Logger(Configurable):
     def __init__(self, **kwargs):
         self.load_all(**kwargs)
 
-        self._make_storage()
+        storage_dir = self._make_storage()
 
         cmd = kwargs['cmd']
         self.name = cmd['name']
-        self.log_dir = os.path.join(self.log_dir, self.name)
+        self.log_dir = os.path.join(storage_dir, self.name)
         try:
             self.verbose = cmd['verbose']
         except:
@@ -42,7 +42,7 @@ class Logger(Configurable):
             print('Initializing log dir for', self.log_dir)
 
         if not os.path.exists(self.log_dir):
-            os.makedirs(self.log_dir)
+            os.makedirs(self.log_dir, exist_ok=True)
 
         self.message_logger = self._init_message_logger()
 
@@ -63,8 +63,9 @@ class Logger(Configurable):
             self.database_dir, self.log_dir, application)
         if not os.path.exists(storage_dir):
             os.makedirs(storage_dir)
-        if not os.path.exists(self.log_dir):
-            os.symlink(storage_dir, self.log_dir)
+        # if not os.path.exists(self.log_dir):
+        #     os.symlink(storage_dir, self.log_dir)
+        return storage_dir
 
     def save_dir(self, dir_name):
         return os.path.join(self.log_dir, dir_name)

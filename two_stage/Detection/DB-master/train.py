@@ -19,9 +19,9 @@ from concern.config import Configurable, Config
 
 def main():
     parser = argparse.ArgumentParser(description='Text Recognition Training')
-    parser.add_argument('--exp', default=r'experiments/seg_detector/totaltext_mobilenet_v3_large_thre.yaml', type=str)
+    parser.add_argument('--exp', default=r'experiments/seg_detector/totaltext_resnet50_deform_thre.yaml', type=str)
     parser.add_argument('--name', type=str)
-    parser.add_argument('--batch_size', type=int, help='Batch size for training')
+    parser.add_argument('--batch_size', type=int, default=16, help='Batch size for training')
     parser.add_argument('--resume', type=str, help='Resume from checkpoint')
     parser.add_argument('--epochs', type=int, help='Number of training epochs')
     parser.add_argument('--num_workers', type=int, help='Number of dataloader workers')

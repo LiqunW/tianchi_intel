@@ -15,8 +15,10 @@ def default_worker_init_fn(worker_id):
     np.random.seed(worker_id)
     imgaug.seed(worker_id)
 
+class _Meta(type(Configurable), type(torch.utils.data.DataLoader)):
+    pass
 
-class DataLoader(Configurable, torch.utils.data.DataLoader):
+class DataLoader(Configurable, torch.utils.data.DataLoader, metaclass=_Meta):
     dataset = State()
     batch_size = State(default=256)
     num_workers = State(default=10)
@@ -53,7 +55,7 @@ class DataLoader(Configurable, torch.utils.data.DataLoader):
                 self, self.dataset,
                 batch_size=self.batch_size, num_workers=self.num_workers,
                 drop_last=self.drop_last, shuffle=self.shuffle,
-                pin_memory=True, collate_fn=self.collect_fn,
+                pin_memory=False, collate_fn=self.collect_fn,
                 worker_init_fn=default_worker_init_fn)
         self.collect_fn = str(self.collect_fn)
 
@@ -177,7 +179,7 @@ class InfiniteOrderedSampler(Sampler):
         return self.limit_size
 
 
-class InfiniteDataLoader(Configurable, torch.utils.data.DataLoader):
+class InfiniteDataLoader(Configurable, torch.utils.data.DataLoader, metaclass=_Meta):
     dataset = State()
     batch_size = State(default=256)
     num_workers = State(default=10)
@@ -219,7 +221,7 @@ class RandomSampleSampler(Sampler):
         return self.size
 
 
-class RandomSampleDataLoader(Configurable, torch.utils.data.DataLoader):
+class RandomSampleDataLoader(Configurable, torch.utils.data.DataLoader, metaclass=_Meta):
     datasets = State()
     weights = State()
     batch_size = State(default=256)

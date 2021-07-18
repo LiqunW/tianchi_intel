@@ -33,7 +33,7 @@ class BasicBlock(nn.Module):
 
     def __init__(self, inplanes, planes, stride=1, downsample=None, dcn=None):
         super(BasicBlock, self).__init__()
-        self.with_dcn = dcn is not None
+        self.with_dcn = False # dcn is not None # 强制改为不用dcn
         self.conv1 = conv3x3(inplanes, planes, stride)
         self.bn1 = BatchNorm2d(planes)
         self.relu = nn.ReLU(inplace=True)
@@ -105,7 +105,7 @@ class Bottleneck(nn.Module):
 
     def __init__(self, inplanes, planes, stride=1, downsample=None, dcn=None):
         super(Bottleneck, self).__init__()
-        self.with_dcn = dcn is not None
+        self.with_dcn = False # dcn is not None
         self.conv1 = nn.Conv2d(inplanes, planes, kernel_size=1, bias=False)
         self.bn1 = BatchNorm2d(planes)
         fallback_on_stride = False
@@ -140,7 +140,7 @@ class Bottleneck(nn.Module):
         self.downsample = downsample
         self.stride = stride
         self.dcn = dcn
-        self.with_dcn = dcn is not None
+        self.with_dcn = False # dcn is not None
 
     def forward(self, x):
         residual = x

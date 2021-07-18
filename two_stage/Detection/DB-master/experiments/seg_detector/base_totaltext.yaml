@@ -6,9 +6,9 @@ define:
   - name: train_data
     class: ImageDataset
     data_dir:
-        - 'C:\Work\Code\tianchi_intel\Detection\DB-master\datasets/total_text/Train'
+        - '/workspace/code/1_work/tianchi_intel/dataset/total_text/Train'
     data_list:
-        - 'C:\Work\Code\tianchi_intel\Detection\DB-master\datasets/total_text/train_list.txt'
+        - '/workspace/code/1_work/tianchi_intel/dataset/total_text/train_list.txt'
     processes:
         - class: AugmentDetectionData
           augmenter_args:
@@ -30,9 +30,9 @@ define:
   - name: validate_data
     class: ImageDataset
     data_dir:
-        - 'C:/Work/Code/tianchi_intel/Detection/DB-master/datasets/total_text/Test'
+        - '/workspace/code/1_work/tianchi_intel/dataset/total_text/Test'
     data_list:
-        - 'C:/Work/Code/tianchi_intel/Detection/DB-master/datasets/total_text/test_list.txt'
+        - '/workspace/code/1_work/tianchi_intel/dataset/total_text/test_list.txt'
     processes:
         - class: AugmentDetectionData
           augmenter_args:
