@@ -10,6 +10,7 @@ def create_strings_from_file(filename, count):
     """
         Create all strings by reading lines in specified files
     """
+    
 
     strings = []
 
