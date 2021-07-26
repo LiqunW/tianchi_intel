@@ -42,10 +42,13 @@ def crop_images(image, dt_boxes):
 def reorder_points(dt_boxes):
     return dt_boxes
 
-def parse_txt()
+def parse_txt():
+    pass
 
 
 if __name__ == "__main__":
     img_path = r'/workspace/tianchi_intel/dataset/huawei/processed/common/images'
     label_path = r''
     
+
+r = requests.post(url, data=payload, timeout=30)
