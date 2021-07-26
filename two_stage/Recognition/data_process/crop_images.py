@@ -1,3 +1,4 @@
+import os
 import copy
 import cv2
 import numpy as np
@@ -39,16 +40,51 @@ def crop_images(image, dt_boxes):
         img_crop_list.append(img_crop)
     return img_crop_list
 
-def reorder_points(dt_boxes):
-    return dt_boxes
 
-def parse_txt():
-    pass
+def reorder_points(point_list):
+    ordered_point_list = sorted(point_list, key=lambda x: (x[0], x[1]))
+    first_point = ordered_point_list[0]
+    slope_list = [[cal_slope(first_point, p), p] for p in ordered_point_list[1:]]
+    ordered_slope_point_list = sorted(slope_list, key=lambda x: x[0])
+    first_third_slope, third_point = ordered_point_list[1]
+    
+    if above_line(ordered_point_list[0][1], third_point, first_third_slope):
+        second_point = ordered_slope_point_list[0][1]
+        fourth_point = ordered_slope_point_list[2][1]
+        reverse_flag = False
+    else:
+        second_point = ordered_slope_point_list[2][1]
+        fourth_point = ordered_slope_point_list[0][1]
+        reverse_flag = True
+        
+    second_fourth_slope = cal_slope(second_point, fourth_point)
+    if first_third_slope < second_fourth_slope:
+        if reverse_flag:
+            reorder_point_list = [fourth_point, first_point, second_point, third_point]
+        else:
+            reorder_point_list = [second_point, third_point, fourth_point, first_point]
+    else:
+        reorder_point_list = [first_point, second_point, third_point, fourth_point]
+    
+    return reorder_point_list
 
 
+def cal_slope(p1, p2):
+    return (p2[1] - p1[1]) / (p2[0] - p1[0] + 1e-5)
+
+
+def above_line(p, start_point, slope):
+    y = (p[0] - start_point[0]) * slope + start_point[1]
+    return p[1] < y
+
+
+def parse_txt(img_path, label_path):
+    for label in os.listdir(label_path):
+        with open(os.path.join(label_path, label), 'r', encoding='utf-8') as f:
+        
+        
 if __name__ == "__main__":
     img_path = r'/workspace/tianchi_intel/dataset/huawei/processed/common/images'
-    label_path = r''
+    label_path = r'/workspace/tianchi_intel/dataset/huawei/processed/common/labels'
     
 
-r = requests.post(url, data=payload, timeout=30)
