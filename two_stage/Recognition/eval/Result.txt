@@ -1,0 +1,10 @@
+../demo_image\demo_1.png 	Available                	0.4026
+../demo_image\demo_2.jpg 	SHAKE SHACK              	0.0677
+../demo_image\demo_3.png 	haneten                  	0.1389
+../demo_image\demo_4.png 	Greenstead               	0.2906
+../demo_image\demo_5.png 	TOAI                     	0.4306
+../demo_image\demo_6.png 	##e##                    	0.0000
+../demo_image\demo_7.png 	underground              	0.2588
+../demo_image\demo_8.jpg 	RONALDD                  	0.3608
+../demo_image\demo_9.jpg 	#AL##                    	0.0560
+../demo_image\demo_10.jpg	SAIRIRS                  	0.0002
