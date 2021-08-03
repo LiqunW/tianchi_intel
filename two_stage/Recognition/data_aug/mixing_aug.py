@@ -80,7 +80,7 @@ def mix_aug(image):
     return aug_img
 
 if __name__ == "__main__":
-    img_path = r''
+    img_path = r'/workspace/code/1_work/tianchi_intel/two_stage/Recognition/demo_image/demo_10.jpg'
     img = Image.open(img_path)
     images = (img, img)
     res = mix_aug(images)

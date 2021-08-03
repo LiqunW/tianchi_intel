@@ -33,7 +33,7 @@ class BasicBlock(nn.Module):
 
     def __init__(self, inplanes, planes, stride=1, downsample=None, dcn=None):
         super(BasicBlock, self).__init__()
-        self.with_dcn = False # dcn is not None # 强制改为不用dcn
+        self.with_dcn = False  # dcn is not None # 强制改为不用dcn
         self.conv1 = conv3x3(inplanes, planes, stride)
         self.bn1 = BatchNorm2d(planes)
         self.relu = nn.ReLU(inplace=True)

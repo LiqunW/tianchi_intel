@@ -66,7 +66,7 @@ class ImageDataset(data.Dataset, Configurable, metaclass=_Meta):
         for gt in self.gt_paths:
             lines = []
             gt = gt.replace('\\', '/')
-            reader = open(gt, 'r').readlines()
+            reader = open(gt, 'r', encoding='utf-8').readlines()
             for line in reader:
                 item = {}
                 parts = line.strip().split(',')

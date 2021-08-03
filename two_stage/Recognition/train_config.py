@@ -1,8 +1,11 @@
 import argparse
 import pickle
-def load_characters(path=r'data_process/char_list.txt'):
+
+
+def load_characters(path=r'data_process/chars.txt'):
     with open(path, 'r', encoding='utf-8') as f:
-        char_str = f.read()
+        char_str = f.read().splitlines()
+    char_str = ''.join(char_str)
     return char_str
 
 # todo 模型训练配置文件
@@ -14,15 +17,15 @@ parser = argparse.ArgumentParser()
 """
 # todo 支持在线训练，支持调用数据生成服务
 
-parser.add_argument('--train_data', type=str, default=r'/media/wlq/System/Work/1_work/ocr_recognition',
+parser.add_argument('--train_data', type=str, default=r'C:/Work/1_work/tianchi_intel/dataset/huawei/lmdb',
                     help='path to training dataset')
-parser.add_argument('--valid_data', type=str,default=r'/media/wlq/System/Work/1_work/ocr_recognition/test',
+parser.add_argument('--valid_data', type=str,default=r'C:/Work/1_work/tianchi_intel/dataset/huawei/lmdb/special',
                     help='path to validation dataset')
 
 # 多个真实数据比例，使用单个数据集，--select_data='/', --batch_ratio='1'
-parser.add_argument('--select_data', type=str, default='test-test',
+parser.add_argument('--select_data', type=str, default='common-special',
                     help='select training data (default is MJ-ST, which means MJ and ST used as training data)')
-parser.add_argument('--batch_ratio', type=str, default='0.6-0.4',
+parser.add_argument('--batch_ratio', type=str, default='0.8-0.2',
                     help='assign ratio for each selected data in the batch')
 parser.add_argument('--total_data_usage_ratio', type=str, default='1.0',
                     help='total data usage ratio, this ratio is multiplied to total number of data.')
@@ -34,10 +37,10 @@ parser.add_argument('--gen_data_ratio', type=str, default='0.5-0.5',
                     help='assign ratio for generate data and selected data in the batch')
 
 parser.add_argument('--workers', type=int, help='number of data loading workers', default=0)
-parser.add_argument('--batch_size', type=int, default=32, help='input batch size')
+parser.add_argument('--batch_size', type=int, default=200, help='input batch size')
 parser.add_argument('--batch_max_length', type=int, default=50, help='maximum-label-length')
 parser.add_argument('--imgH', type=int, default=32, help='the height of the input image')
-parser.add_argument('--imgW', type=int, default=200, help='the width of the input image')
+parser.add_argument('--imgW', type=int, default=400, help='the width of the input image')
 parser.add_argument('--rgb', action='store_false', help='use rgb input')
 parser.add_argument('--PAD', action='store_false', help='whether to keep ratio then pad for image resize')
 parser.add_argument('--character', type=str,
@@ -73,11 +76,11 @@ aug_config.add_argument('--down_up_sample', action='store_false', help='add down
 模型架构配置，分为4个阶段，图像矫正(非必须) -> 特征提取 -> lstm(非必须) -> 解码(ctc|attn)
 tps控制点，lstm核数量设置
 """
-parser.add_argument('--Transformation', type=str, default='None', help='Transformation stage. None|TPS')
+parser.add_argument('--Transformation', type=str, default='TPS', help='Transformation stage. None|TPS')
 parser.add_argument('--FeatureExtraction', type=str, default='ResNet',
                     help='FeatureExtraction stage. VGG|RCNN|ResNet')
-parser.add_argument('--SequenceModeling', type=str, default='None', help='SequenceModeling stage. None|BiLSTM')
-parser.add_argument('--Prediction', type=str, default='Attn', help='Prediction stage. CTC|Attn')
+parser.add_argument('--SequenceModeling', type=str, default='BiLSTM', help='SequenceModeling stage. None|BiLSTM')
+parser.add_argument('--Prediction', type=str, default='CTC', help='Prediction stage. CTC|Attn')
 parser.add_argument('--num_fiducial', type=int, default=20, help='number of fiducial points of TPS-STN')
 parser.add_argument('--input_channel', type=int, default=3,
                     help='the number of input channel of Feature extractor')
@@ -88,13 +91,14 @@ parser.add_argument('--hidden_size', type=int, default=256, help='the size of th
 """
 模型训练配置，训练次数，验证频率，学习率，优化器设置等
 """
-parser.add_argument('--exp_name', default=r'', help='where to store logs and models')
-parser.add_argument('--config', default='train_config.pkl', help='save train config for next train')
+parser.add_argument('--exp_name', default=r'huawei_0731_ft_ver', help='where to store logs and models')
+parser.add_argument('--config', default='train_config_2.pkl', help='save train config for next train')
 parser.add_argument('--manualSeed', type=int, default=1024, help='for random seed setting')
 parser.add_argument('--num_iter', type=int, default=500000, help='number of iterations to train for')
 parser.add_argument('--valInterval', type=int, default=5000, help='Interval between each validation')
-parser.add_argument('--saved_model', default='', help="path to model to continue training")
-parser.add_argument('--FT', action='store_true', help='whether to do fine-tuning')
+parser.add_argument('--saved_model', default='pre_trained_models/TPS-ResNet-BiLSTM-CTC.pth',
+                    help="path to model to continue training")
+parser.add_argument('--FT', default=True, help='whether to do fine-tuning')
 parser.add_argument('--adam', action='store_true', help='Whether to use adam (default is Adadelta)')
 parser.add_argument('--lr', type=float, default=1, help='learning rate, default=1.0 for Adadelta')
 parser.add_argument('--beta1', type=float, default=0.9, help='beta1 for adam. default=0.9')

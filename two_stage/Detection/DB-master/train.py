@@ -22,7 +22,7 @@ def main():
     parser.add_argument('--exp', default=r'experiments/seg_detector/totaltext_resnet50_deform_thre.yaml', type=str)
     parser.add_argument('--name', type=str)
     parser.add_argument('--batch_size', type=int, default=16, help='Batch size for training')
-    parser.add_argument('--resume', type=str, help='Resume from checkpoint')
+    parser.add_argument('--resume', type=str, default='pre_trained_models/model_epoch_78_minibatch_18000', help='Resume from checkpoint')
     parser.add_argument('--epochs', type=int, help='Number of training epochs')
     parser.add_argument('--num_workers', type=int, help='Number of dataloader workers')
     parser.add_argument('--start_iter', type=int, help='Begin counting iterations starting from this value (should be used with resume)')
@@ -44,7 +44,7 @@ def main():
     parser.add_argument('--no-benchmark', action='store_false', dest='benchmark', help='Turn cudnn benchmark mode off')
     parser.add_argument('-d', '--distributed', action='store_true', dest='distributed', help='Use distributed training')
     parser.add_argument('--local_rank', dest='local_rank', default=0, type=int, help='Use distributed training')
-    parser.add_argument('-g', '--num_gpus', dest='num_gpus', default=4, type=int, help='The number of accessible gpus')
+    parser.add_argument('-g', '--num_gpus', dest='num_gpus', default=1, type=int, help='The number of accessible gpus')
     parser.set_defaults(debug=False)
     parser.set_defaults(benchmark=True)
 

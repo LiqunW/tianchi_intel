@@ -9,7 +9,7 @@ import torch.utils.data
 import torch.nn.functional as F
 
 from utils import CTCLabelConverter, AttnLabelConverter
-from dataset import RawDataset_no_short, AlignCollate_no_aug, RawDataset, AlignCollate
+from dataset import RawDataset, AlignCollate # RawDataset_no_short, AlignCollate_no_aug, RawDataset, AlignCollate
 from model import Model
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -93,34 +93,37 @@ def demo(opt):
 
             log.close()
 
-def load_characters(path=r''):
+
+def load_characters(path=r'data_process/chars.txt'):
     with open(path, 'r', encoding='utf-8') as f:
-        char_str = f.read()
+        char_str = f.read().splitlines()
+    char_str = ''.join(char_str)
     return char_str
+
 
 def run_demo():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--image_folder', default=r'/mnt/jyyu/data/ocr/xg_ctc_/test',
+    parser.add_argument('--image_folder', default=r'demo_image',
                         help='path to image_folder which contains text images')
     parser.add_argument('--workers', type=int, help='number of data loading workers', default=2)
-    parser.add_argument('--batch_size', type=int, default=20, help='input batch size')
+    parser.add_argument('--batch_size', type=int, default=100, help='input batch size')
     parser.add_argument('--saved_model', help="path to saved_model to evaluation",
-                        default=r'/mnt/jyyu/data/ocr_train/saved_models/01-22-21:23:31TPS-ResNet-BiLSTM-Attn-Seed1024/best_accuracy.pth')
+                        default=r'saved_models/huawei_0731_first_ver/best_norm_ED.pth')
     """ Data processing """
     parser.add_argument('--batch_max_length', type=int, default=50, help='maximum-label-length')
     parser.add_argument('--imgH', type=int, default=32, help='the height of the input image')
-    parser.add_argument('--imgW', type=int, default=350, help='the width of the input image')
+    parser.add_argument('--imgW', type=int, default=400, help='the width of the input image')
     parser.add_argument('--rgb', action='store_true', default=True, help='use rgb input')
     # parser.add_argument('--character', type=str, default='0123456789abcdefghijklmnopqrstuvwxyz', help='character label')
     parser.add_argument('--character',type=str,
-                        default=load_characters("/mnt/jyyu/data/ocr_train/data_process/char_list.txt"),help='character label') # 载入中文字符集
+                        default=load_characters("data_process/chars.txt"),help='character label') # 载入中文字符集
     parser.add_argument('--sensitive', default=False, action='store_true', help='for sensitive character mode')
     parser.add_argument('--PAD', action='store_false', help='whether to keep ratio then pad for image resize')
     """ Model Architecture """
     parser.add_argument('--Transformation', type=str, required=False, default="TPS", help='Transformation stage. None|TPS')
     parser.add_argument('--FeatureExtraction', type=str, required=False, default="ResNet",  help='FeatureExtraction stage. VGG|RCNN|ResNet')
     parser.add_argument('--SequenceModeling', type=str, required=False,  default="BiLSTM", help='SequenceModeling stage. None|BiLSTM')
-    parser.add_argument('--Prediction', type=str, required=False, default="Attn", help='Prediction stage. CTC|Attn')
+    parser.add_argument('--Prediction', type=str, required=False, default="CTC", help='Prediction stage. CTC|Attn')
     parser.add_argument('--num_fiducial', type=int, default=20, help='number of fiducial points of TPS-STN')
     parser.add_argument('--input_channel', type=int, default=3, help='the number of input channel of Feature extractor')
     parser.add_argument('--output_channel', type=int, default=512,

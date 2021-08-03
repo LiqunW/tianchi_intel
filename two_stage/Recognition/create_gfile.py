@@ -28,9 +28,9 @@ class CreateGfile():
 
     def find_label(self, img):
         if img.endswith('jpg') or img.endswith('png'):
-            label = img[:-3]+'txt'
+            label = img+'.txt'
         elif img.endswith('jpeg'):
-            label = img[:-4]+'txt'
+            label = img+'.txt'
         else:
             assert False
         return label
@@ -48,25 +48,14 @@ class CreateGfile():
         self.fw.close()
 
 
-
-def process_data(imgs, labels, out_dir='./gt.txt'):
-    with open(out_dir, 'w', encoding='utf-8') as f:
-        for img, l in zip(imgs, labels):
-            with open(l, 'r', encoding='utf-8') as fr:
-                tmp_l = fr.read()
-            new_line = img + '\t' + tmp_l + '\n'
-            f.write(new_line)
-
-
 if __name__ == "__main__":
-    data_path = {'image': [r'/home/jj/xuegu/data_gen_zhucedengji/data/gen_test/img',
+    data_path = {'image': [r'/work/dataset/crop/special/images',
 
     ],
-                 'label': [r'/home/jj/xuegu/data_gen_zhucedengji/data/gen_test/txt',
+                 'label': [r'/work/dataset/crop/special/labels',
 
                  ]
     }
-    # imgs, labels = load_img_label(**data_path)
-    # process_data(imgs, labels, out_dir=r'./train_gen_gt.txt')
-    cg = CreateGfile(out_dir=r'./train_gen_gt.txt', **data_path)
+
+    cg = CreateGfile(out_dir=r'/work/dataset/train_special_gt.txt', **data_path)
     cg()

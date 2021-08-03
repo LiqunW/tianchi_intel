@@ -19,6 +19,8 @@ import torchvision.transforms as transforms
 import data_aug
 import gen_data_service
 
+# todo 多进程数据集读取，去掉数据均衡
+
 class Data_augment(object):
     def __init__(self, opt):
         # 读取opt配置参数，选择可用的数据增强方式
@@ -57,24 +59,27 @@ class Data_augment(object):
                     tmp = np.random.choice(self.avail_aug_dict['transform'])(tmp)
                 aug_imgs.append(tmp)
             except Exception as ex:
-                print('Augment Fail: ',ex)
+                # print('Augment Fail: ',ex)
                 aug_imgs.append(img)
         return aug_imgs
 
-    def __call__(self, images):
+    def __call__(self, images, aug_ratio=0.5):
         # 分情况进行数据增强，噪声，变换，混合增强3种
-        if np.random.random() > 0.5:
-            aug_imgs = self.transform_noise(images)
-        else:
-            # 混合增强
-            if self.avail_aug_dict['mix']:
-                try:
-                    aug_imgs = self.avail_aug_dict['mix'][0](images)
-                except Exception as ex:
-                    print('Mix Augment Fail: ', ex)
-                    aug_imgs = images
+        if np.random.random() < aug_ratio: # 只对一定比例的数据做增强
+            if np.random.random() > 0.5:
+                aug_imgs = self.transform_noise(images)
             else:
-                aug_imgs = images
+                # 混合增强
+                if self.avail_aug_dict['mix']:
+                    try:
+                        aug_imgs = self.avail_aug_dict['mix'][0](images)
+                    except Exception as ex:
+                        # print('Mix Augment Fail: ', ex)
+                        aug_imgs = images
+                else:
+                    aug_imgs = images
+        else:
+            aug_imgs = images
         return aug_imgs
 
 

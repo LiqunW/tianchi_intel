@@ -1,6 +1,5 @@
 """ a modified version of CRNN torch repository https://github.com/bgshih/crnn/blob/master/tool/create_dataset.py """
 
-import fire
 import os
 import lmdb
 import cv2
@@ -29,6 +28,7 @@ def min_ctc_len(text):
             ctc_len +=1
     return ctc_len
 
+
 def checkImageIsValid_new(imageBin, label):
     if imageBin is None:
         return False
@@ -41,17 +41,17 @@ def checkImageIsValid_new(imageBin, label):
         return False
     return True
 
+
 def writeCache(env, cache):
     with env.begin(write=True) as txn:
         for k, v in cache.items():
             txn.put(k, v)
 
 
-def createDataset(inputPath, gtFile, outputPath, checkValid=True):
+def createDataset(gtFile, outputPath, checkValid=True):
     """
     Create LMDB dataset for training and evaluation.
     ARGS:
-        inputPath  : input folder path where starts imagePath
         outputPath : LMDB output path
         gtFile     : list of image path and label
         checkValid : if true, check the validity of every image
@@ -107,9 +107,6 @@ def createDataset(inputPath, gtFile, outputPath, checkValid=True):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--input_images',default=r'',help='image_path')
     # 根据txt里的信息创建lmdb数据集
-    createDataset(r'',gtFile=r'train_gt.txt',outputPath=r'')
+    createDataset(gtFile=r'/work/dataset/train_special_gt.txt',outputPath=r'/work/dataset/lmdb/special')
 
-    # fire.Fire(createDataset)
