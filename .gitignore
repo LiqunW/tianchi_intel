@@ -8,3 +8,4 @@
 /two_stage/Detection/DB-master/pre_trained_models/
 /dataset/tianchi_data/
 *.jpg
+*.png
