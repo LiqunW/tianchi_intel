@@ -1,2 +1,9 @@
 /two_stage/Detection/DB-master/outputs/
 /dataset/
+/two_stage/Recognition/pre_trained_models/
+/End_2_End/PGNet/pre_trained_model/
+/two_stage/Recognition/eval/models/
+/two_stage/Recognition/saved_models/
+/two_stage/Detection/DB-master/total_text/
+/two_stage/Detection/DB-master/pre_trained_models/
+/dataset/tianchi_data/
