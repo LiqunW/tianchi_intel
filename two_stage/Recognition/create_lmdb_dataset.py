@@ -108,5 +108,5 @@ def createDataset(gtFile, outputPath, checkValid=True):
 
 if __name__ == '__main__':
     # 根据txt里的信息创建lmdb数据集
-    createDataset(gtFile=r'/work/dataset/train_special_gt.txt',outputPath=r'/work/dataset/lmdb/special')
+    createDataset(gtFile=r'/work/dataset/train_special_gt2.txt',outputPath=r'/work/dataset/lmdb/special')
 
