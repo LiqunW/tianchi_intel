@@ -88,11 +88,23 @@ def load_lexion(path=r'words_dict.pkl'):
 
 
 def rectify_res(pred_str, pred_prob, threshold=0.8):
+    # TODO 过滤开头和结尾的空格
     for p_str, p_prob in zip(pred_str, pred_prob):
         # 按照空格分隔，并且找到对应的index
         if ' ' not in p_str:
             return pred_str, pred_prob
         else:
+            w_list = p_str.split(' ')
+            blank_idx = []
+            for i in range(len(p_str)):
+                if p_str[i] == ' ':
+                    blank_idx.append(i)
+            words_prob = []
+            for i in range(len(blank_idx)):
+                if i ==0:
+                    words_prob.append(p_prob[:blank_idx[0]])
+                else:
+                    words_prob.append(p_prob[blank_idx[i-1]+1:blank_idx[i]])
 
 
 def load_characters(path=r'data_process/chars.txt'):
