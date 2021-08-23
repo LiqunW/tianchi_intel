@@ -4,6 +4,7 @@ import cv2
 import tqdm
 
 
+
 def parse_json(json_path, imgdir, outdir):
     with open(json_path, 'r', encoding='utf-8') as f:
         labels = json.load(f)

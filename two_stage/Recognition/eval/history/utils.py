@@ -36,24 +36,20 @@ class CTCLabelConverter(object):
             batch_text[i][:len(text)] = torch.LongTensor(text)
         return (batch_text.to(device), torch.IntTensor(length).to(device))
 
-    def decode(self, text_index, text_probs, length):
+    def decode(self, text_index, length):
         """ convert text-index into text-label. """
         texts = []
-        probs = []
         for index, l in enumerate(length):
             t = text_index[index, :]
-            t_p = text_probs[index, :]
+
             char_list = []
-            probs_list = []
             for i in range(l):
                 if t[i] != 0 and (not (i > 0 and t[i - 1] == t[i])):  # removing repeated characters and blank.
                     char_list.append(self.character[t[i]])
-                    probs_list.append(float(t_p[0].cpu().numpy()))
             text = ''.join(char_list)
 
             texts.append(text)
-            probs.append(probs_list)
-        return texts, probs
+        return texts
 
 class CTCLabelConverterForBaiduWarpctc(object):
     """Convert between text-label and text-index for baidu warpctc"""

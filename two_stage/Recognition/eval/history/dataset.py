@@ -16,8 +16,8 @@ from torch.utils.data import Dataset, ConcatDataset, Subset
 from torch._utils import _accumulate
 import torchvision.transforms as transforms
 
-# import data_aug
-# import gen_data_service
+#import data_aug
+#import gen_data_service
 
 # todo 多进程数据集读取，去掉数据均衡
 
@@ -405,22 +405,29 @@ class AlignCollate(object):
         batch = filter(lambda x: x is not None, batch)
         images, labels = zip(*batch)
 
-        _img_w, _img_h = images[0].size
-        ratio = self.imgH / _img_h
+        # 先做数据增强
+        if self.data_aug and self.data_aug.using_aug:
+            images = self.data_aug(images)
+        else:
+            pass
 
-        resized_w = int(_img_w * ratio)
-        
         if self.keep_ratio_with_pad:  # same concept with 'Rosetta' paper
+            resized_max_w = self.imgW
             input_channel = 3 if images[0].mode == 'RGB' else 1
-            transform = NormalizePAD((input_channel, self.imgH, resized_w))
+            transform = NormalizePAD((input_channel, self.imgH, resized_max_w))
 
             resized_images = []
             for image in images:
-                _img_w, _img_h = images[0].size
-                ratio = self.imgH / _img_h
-                resized_w = int(_img_w * ratio)
-                image = image.resize((resized_w, self.imgH), Image.BICUBIC)
-                resized_images.append(transform(image))
+                w, h = image.size
+                ratio = w / float(h)
+                if math.ceil(self.imgH * ratio) > self.imgW:
+                    resized_w = self.imgW
+                else:
+                    resized_w = math.ceil(self.imgH * ratio)
+
+                resized_image = image.resize((resized_w, self.imgH), Image.BICUBIC)
+                resized_images.append(transform(resized_image))
+                # resized_image.save('./image_test/%d_test.jpg' % w)
 
             image_tensors = torch.cat([t.unsqueeze(0) for t in resized_images], 0)
 

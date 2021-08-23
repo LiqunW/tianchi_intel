@@ -1,25 +1,16 @@
 import os
-
-import numpy as np
-
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 import string
-import pickle
 import argparse
+
 import torch
 import torch.backends.cudnn as cudnn
 import torch.utils.data
 import torch.nn.functional as F
 
-
-try:
-    from .utils import CTCLabelConverter, AttnLabelConverter
-    from .dataset import RawDataset, AlignCollate # RawDataset_no_short, AlignCollate_no_aug, RawDataset, AlignCollate
-    from .model import Model
-except:
-    from utils import CTCLabelConverter, AttnLabelConverter
-    from dataset import RawDataset, AlignCollate  # RawDataset_no_short, AlignCollate_no_aug, RawDataset, AlignCollate
-    from model import Model
+from utils import CTCLabelConverter, AttnLabelConverter
+from dataset import RawDataset, AlignCollate # RawDataset_no_short, AlignCollate_no_aug, RawDataset, AlignCollate
+from model import Model
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
@@ -64,35 +55,43 @@ def demo(opt):
 
             if 'CTC' in opt.Prediction:
                 preds = model(image, text_for_pred)
-                preds = F.softmax(preds, dim=2)
+
                 # Select max probabilty (greedy decoding) then decode index to character
                 preds_size = torch.IntTensor([preds.size(1)] * batch_size)
-                pred_p, preds_index = preds.max(2)
+                _, preds_index = preds.max(2)
                 # preds_index = preds_index.view(-1)
-                preds_str, preds_prob = converter.decode(preds_index, pred_p, preds_size)
+                preds_str = converter.decode(preds_index, preds_size)
+            else:
+                preds = model(image, text_for_pred, is_train=False)
 
-            log = open(f'./Result.txt', 'w', encoding='utf-8')
+                # select max probabilty (greedy decoding) then decode index to character
+                _, preds_index = preds.max(2)
+                preds_str = converter.decode(preds_index, length_for_pred)
 
-            for img_name, pred, pred_max_prob in zip(image_path_list, preds_str, preds_prob):
-                confidence_score = np.mean(pred_max_prob)
+
+            log = open(f'./Result.txt', 'w')
+            # dashed_line = '-' * 80
+            # head = f'{"image_path":25s}\t{"predicted_labels":25s}\tconfidence score'
+            #
+            # print(f'{dashed_line}\n{head}\n{dashed_line}')
+            # log.write(f'{dashed_line}\n{head}\n{dashed_line}\n')
+
+            preds_prob = F.softmax(preds, dim=2)
+            preds_max_prob, _ = preds_prob.max(dim=2)
+            for img_name, pred, pred_max_prob in zip(image_path_list, preds_str, preds_max_prob):
+                if 'Attn' in opt.Prediction:
+                    pred_EOS = pred.find('[s]')
+                    pred = pred[:pred_EOS]  # prune after "end of sentence" token ([s])
+
+                    pred_max_prob = pred_max_prob[:pred_EOS]
+
+                # calculate confidence score (= multiply of pred_max_prob)
+                confidence_score = pred_max_prob.cumprod(dim=0)[-1]
 
                 print(f'{img_name:25s}\t{pred:25s}\t{confidence_score:0.4f}')
                 log.write(f'{img_name:25s}\t{pred:25s}\t{confidence_score:0.4f}\n')
 
             log.close()
-
-
-def load_lexion(path=r'words_dict.pkl'):
-    with open(path, 'rb') as f:
-        words_dict = pickle.load(f)
-
-
-def rectify_res(pred_str, pred_prob, threshold=0.8):
-    for p_str, p_prob in zip(pred_str, pred_prob):
-        # 按照空格分隔，并且找到对应的index
-        if ' ' not in p_str:
-            return pred_str, pred_prob
-        else:
 
 
 def load_characters(path=r'data_process/chars.txt'):
@@ -106,8 +105,8 @@ def run_demo():
     parser = argparse.ArgumentParser()
     parser.add_argument('--image_folder', default=r'../demo_image',
                         help='path to image_folder which contains text images')
-    parser.add_argument('--workers', type=int, help='number of data loading workers', default=1)
-    parser.add_argument('--batch_size', type=int, default=1, help='input batch size')
+    parser.add_argument('--workers', type=int, help='number of data loading workers', default=2)
+    parser.add_argument('--batch_size', type=int, default=100, help='input batch size')
     parser.add_argument('--saved_model', help="path to saved_model to evaluation",
                         default=r'models/best_norm_ED.pth')
     """ Data processing """
@@ -117,13 +116,13 @@ def run_demo():
     parser.add_argument('--rgb', action='store_true', default=True, help='use rgb input')
     # parser.add_argument('--character', type=str, default='0123456789abcdefghijklmnopqrstuvwxyz', help='character label')
     parser.add_argument('--character', type=str,
-                        default=load_characters("chars.txt"), help='character label') # 载入中文字符集
+                        default=load_characters("chars.txt"),help='character label') # 载入中文字符集
     parser.add_argument('--sensitive', default=False, action='store_true', help='for sensitive character mode')
     parser.add_argument('--PAD', action='store_false', help='whether to keep ratio then pad for image resize')
     """ Model Architecture """
-    parser.add_argument('--Transformation', type=str, required=False, default="None", help='Transformation stage. None|TPS')
+    parser.add_argument('--Transformation', type=str, required=False, default="TPS", help='Transformation stage. None|TPS')
     parser.add_argument('--FeatureExtraction', type=str, required=False, default="ResNet",  help='FeatureExtraction stage. VGG|RCNN|ResNet')
-    parser.add_argument('--SequenceModeling', type=str, required=False,  default="None", help='SequenceModeling stage. None|BiLSTM')
+    parser.add_argument('--SequenceModeling', type=str, required=False,  default="BiLSTM", help='SequenceModeling stage. None|BiLSTM')
     parser.add_argument('--Prediction', type=str, required=False, default="CTC", help='Prediction stage. CTC|Attn')
     parser.add_argument('--num_fiducial', type=int, default=20, help='number of fiducial points of TPS-STN')
     parser.add_argument('--input_channel', type=int, default=3, help='the number of input channel of Feature extractor')
@@ -143,7 +142,6 @@ def run_demo():
     opt.num_gpu = torch.cuda.device_count()
 
     demo(opt)
-
 
 if __name__ == '__main__':
     run_demo()
