@@ -19,13 +19,13 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('--train_data', type=str, default=r'/work/dataset/lmdb',
                     help='path to training dataset')
-parser.add_argument('--valid_data', type=str,default=r'/work/dataset/lmdb/special',
+parser.add_argument('--valid_data', type=str, default=r'/work/dataset/lmdb/train_data_min',
                     help='path to validation dataset')
 
 # 多个真实数据比例，使用单个数据集，--select_data='/', --batch_ratio='1'
 parser.add_argument('--select_data', type=str, default='common-special',
                     help='select training data (default is MJ-ST, which means MJ and ST used as training data)')
-parser.add_argument('--batch_ratio', type=str, default='0.8-0.2',
+parser.add_argument('--batch_ratio', type=str, default='0.9-0.1',
                     help='assign ratio for each selected data in the batch')
 parser.add_argument('--total_data_usage_ratio', type=str, default='1.0',
                     help='total data usage ratio, this ratio is multiplied to total number of data.')
@@ -37,10 +37,10 @@ parser.add_argument('--gen_data_ratio', type=str, default='0.5-0.5',
                     help='assign ratio for generate data and selected data in the batch')
 
 parser.add_argument('--workers', type=int, help='number of data loading workers', default=0)
-parser.add_argument('--batch_size', type=int, default=200, help='input batch size')
-parser.add_argument('--batch_max_length', type=int, default=50, help='maximum-label-length')
+parser.add_argument('--batch_size', type=int, default=192, help='input batch size')
+parser.add_argument('--batch_max_length', type=int, default=80, help='maximum-label-length')
 parser.add_argument('--imgH', type=int, default=32, help='the height of the input image')
-parser.add_argument('--imgW', type=int, default=500, help='the width of the input image')
+parser.add_argument('--imgW', type=int, default=800, help='the width of the input image')
 parser.add_argument('--rgb', action='store_false', help='use rgb input')
 parser.add_argument('--PAD', action='store_false', help='whether to keep ratio then pad for image resize')
 parser.add_argument('--character', type=str,
@@ -91,12 +91,12 @@ parser.add_argument('--hidden_size', type=int, default=256, help='the size of th
 """
 模型训练配置，训练次数，验证频率，学习率，优化器设置等
 """
-parser.add_argument('--exp_name', default=r'huawei_0816_ft_ver', help='where to store logs and models')
-parser.add_argument('--config', default='train_config3.pkl', help='save train config for next train')
+parser.add_argument('--exp_name', default=r'huawei_0825_train', help='where to store logs and models')
+parser.add_argument('--config', default='train_config_0824.pkl', help='save train config for next train')
 parser.add_argument('--manualSeed', type=int, default=1024, help='for random seed setting')
 parser.add_argument('--num_iter', type=int, default=500000, help='number of iterations to train for')
-parser.add_argument('--valInterval', type=int, default=5000, help='Interval between each validation')
-parser.add_argument('--saved_model', default='pre_trained_models/None-ResNet-None-CTC.pth',
+parser.add_argument('--valInterval', type=int, default=2500, help='Interval between each validation')
+parser.add_argument('--saved_model', default='',
                     help="path to model to continue training")
 parser.add_argument('--FT', default=True, help='whether to do fine-tuning')
 parser.add_argument('--adam', action='store_true', help='Whether to use adam (default is Adadelta)')

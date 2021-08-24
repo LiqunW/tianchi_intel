@@ -22,7 +22,7 @@ def main():
     parser.add_argument('--exp', default=r'experiments/seg_detector/totaltext_resnet50_deform_thre.yaml', type=str)
     parser.add_argument('--name', type=str)
     parser.add_argument('--batch_size', type=int, default=16, help='Batch size for training')
-    parser.add_argument('--resume', type=str, default='pre_trained_models/model_epoch_78_minibatch_18000', help='Resume from checkpoint')
+    parser.add_argument('--resume', type=str, help='Resume from checkpoint')
     parser.add_argument('--epochs', type=int, help='Number of training epochs')
     parser.add_argument('--num_workers', type=int, help='Number of dataloader workers')
     parser.add_argument('--start_iter', type=int, help='Begin counting iterations starting from this value (should be used with resume)')

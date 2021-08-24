@@ -43,19 +43,20 @@ class CreateGfile():
     def __call__(self, *args, **kwargs):
         for img, label in self.data_path_process():
             label_txt = self.read_label(label)
-            new_line = img + '\t' + label_txt + '\n'
-            self.fw.write(new_line)
+            if '###' not in label_txt:
+                new_line = img + '\t' + label_txt + '\n'
+                self.fw.write(new_line)
         self.fw.close()
 
 
 if __name__ == "__main__":
-    data_path = {'image': [r'/work/dataset/crop/special/images',
+    data_path = {'image': [r'/work/dataset/crop/common/images',
 
     ],
-                 'label': [r'/work/dataset/crop/special/labels',
+                 'label': [r'/work/dataset/crop/common/labels',
 
                  ]
     }
 
-    cg = CreateGfile(out_dir=r'/work/dataset/train_special_gt.txt', **data_path)
+    cg = CreateGfile(out_dir=r'/work/dataset/train_common_gt.txt', **data_path)
     cg()

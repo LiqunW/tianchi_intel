@@ -66,7 +66,10 @@ def createDataset(gtFile, outputPath, checkValid=True):
 
     nSamples = len(datalist)
     for i in tqdm.tqdm(range(nSamples)):
-        imagePath, label = datalist[i].strip('\n').split('\t')
+        try:
+            imagePath, label = datalist[i].strip('\n').split('\t')
+        except:
+            continue
         # imagePath = os.path.join(inputPath, imagePath)
 
         # # only use alphanumeric data
@@ -108,5 +111,5 @@ def createDataset(gtFile, outputPath, checkValid=True):
 
 if __name__ == '__main__':
     # 根据txt里的信息创建lmdb数据集
-    createDataset(gtFile=r'/work/dataset/train_special_gt2.txt',outputPath=r'/work/dataset/lmdb/special')
+    createDataset(gtFile=r'/work/dataset/train_data_min.txt', outputPath=r'/work/dataset/lmdb/train_data_min')
 

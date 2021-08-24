@@ -251,7 +251,7 @@ def train(opt):
 def run_train_config():
     os.system("python3 train_config.py use_data_aug") #使用数据增强
     # os.system("python train_config.py")
-    with open(r'train_config3.pkl', 'rb') as f:
+    with open(r'train_config_0824.pkl', 'rb') as f:
         opt = pickle.load(f)
     return opt
 
