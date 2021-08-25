@@ -96,7 +96,7 @@ parser.add_argument('--config', default='train_config_0825.pkl', help='save trai
 parser.add_argument('--manualSeed', type=int, default=1024, help='for random seed setting')
 parser.add_argument('--num_iter', type=int, default=500000, help='number of iterations to train for')
 parser.add_argument('--valInterval', type=int, default=2500, help='Interval between each validation')
-parser.add_argument('--saved_model', default='huawei_0825_train/best_norm_ED.pth',
+parser.add_argument('--saved_model', default='saved_models/huawei_0825_train/best_norm_ED.pth',
                     help="path to model to continue training")
 parser.add_argument('--FT', default=True, help='whether to do fine-tuning')
 parser.add_argument('--adam', action='store_true', help='Whether to use adam (default is Adadelta)')
