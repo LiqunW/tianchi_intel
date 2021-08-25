@@ -212,6 +212,9 @@ def train(opt):
                 current_model_log = f'{"Current_accuracy":17s}: {current_accuracy:0.3f}, {"Current_norm_ED":17s}: {current_norm_ED:0.2f}'
 
                 # keep best accuracy model (on valid dataset)
+                if iteration+1 % opt.valInterval*4 == 0:
+                    torch.save(model.state_dict(), f'./saved_models/{opt.exp_name}/step_{opt.valInterval*2}.pth')
+
                 if current_accuracy > best_accuracy:
                     best_accuracy = current_accuracy
                     torch.save(model.state_dict(), f'./saved_models/{opt.exp_name}/best_accuracy.pth')
@@ -251,7 +254,7 @@ def train(opt):
 def run_train_config():
     os.system("python3 train_config.py use_data_aug") #使用数据增强
     # os.system("python train_config.py")
-    with open(r'train_config_0824.pkl', 'rb') as f:
+    with open(r'train_config_0825.pkl', 'rb') as f:
         opt = pickle.load(f)
     return opt
 
