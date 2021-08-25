@@ -439,6 +439,45 @@ class AlignCollate(object):
         return image_tensors, labels
 
 
+class AlignCollate_val(object):
+    
+    def __init__(self, imgH=32, imgW=100, keep_ratio_with_pad=False, data_aug=None):
+        self.imgH = imgH
+        self.imgW = imgW
+        self.keep_ratio_with_pad = keep_ratio_with_pad
+        self.data_aug = data_aug
+    
+    def __call__(self, batch):
+        batch = filter(lambda x: x is not None, batch)
+        images, labels = zip(*batch)
+        
+        _img_w, _img_h = images[0].size
+        ratio = self.imgH / _img_h
+        
+        resized_w = int(_img_w * ratio)
+        
+        if self.keep_ratio_with_pad:  # same concept with 'Rosetta' paper
+            input_channel = 3 if images[0].mode == 'RGB' else 1
+            transform = NormalizePAD((input_channel, self.imgH, resized_w))
+            
+            resized_images = []
+            for image in images:
+                _img_w, _img_h = images[0].size
+                ratio = self.imgH / _img_h
+                resized_w = int(_img_w * ratio)
+                image = image.resize((resized_w, self.imgH), Image.BICUBIC)
+                resized_images.append(transform(image))
+            
+            image_tensors = torch.cat([t.unsqueeze(0) for t in resized_images], 0)
+        
+        else:
+            transform = ResizeNormalize((self.imgW, self.imgH))
+            image_tensors = [transform(image) for image in images]
+            image_tensors = torch.cat([t.unsqueeze(0) for t in image_tensors], 0)
+        
+        return image_tensors, labels
+
+
 def tensor2im(image_tensor, imtype=np.uint8):
     image_numpy = image_tensor.cpu().float().numpy()
     if image_numpy.shape[0] == 1:

@@ -17,7 +17,7 @@ import torch.utils.data
 import numpy as np
 
 from utils import CTCLabelConverter, CTCLabelConverterForBaiduWarpctc, AttnLabelConverter, Averager
-from dataset import hierarchical_dataset, AlignCollate, Batch_Balanced_Dataset
+from dataset import hierarchical_dataset, AlignCollate, Batch_Balanced_Dataset, AlignCollate_val
 from model import Model
 from test import validation
 
@@ -38,12 +38,12 @@ def train(opt):
     train_dataset = Batch_Balanced_Dataset(opt)
 
     log = open(f'./saved_models/{opt.exp_name}/log_dataset.txt', 'a')
-    AlignCollate_valid = AlignCollate(imgH=opt.imgH, imgW=opt.imgW, keep_ratio_with_pad=opt.PAD)
+    AlignCollate_valid = AlignCollate_val(imgH=opt.imgH, imgW=opt.imgW, keep_ratio_with_pad=opt.PAD)
     valid_dataset, valid_dataset_log = hierarchical_dataset(root=opt.valid_data, opt=opt)
     valid_loader = torch.utils.data.DataLoader(
-        valid_dataset, batch_size=opt.batch_size,
+        valid_dataset, batch_size=1,
         shuffle=True,  # 'True' to check training progress with validation function.
-        num_workers=int(opt.workers),
+        num_workers=1,
         collate_fn=AlignCollate_valid, pin_memory=True)
     log.write(valid_dataset_log)
     print('-' * 80)

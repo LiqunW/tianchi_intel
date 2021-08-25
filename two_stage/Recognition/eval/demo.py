@@ -87,7 +87,7 @@ def load_lexion(path=r'words_dict.pkl'):
         words_dict = pickle.load(f)
 
 
-def rectify_res(pred_str, pred_prob, threshold=0.8):
+def rectify_res(pred_str, pred_prob, threshold=0.85):
     # TODO 过滤开头和结尾的空格
     for p_str, p_prob in zip(pred_str, pred_prob):
         # 按照空格分隔，并且找到对应的index
@@ -101,11 +101,11 @@ def rectify_res(pred_str, pred_prob, threshold=0.8):
                     blank_idx.append(i)
             words_prob = []
             for i in range(len(blank_idx)):
-                if i ==0:
+                if i == 0:
                     words_prob.append(p_prob[:blank_idx[0]])
                 else:
                     words_prob.append(p_prob[blank_idx[i-1]+1:blank_idx[i]])
-
+                
 
 def load_characters(path=r'data_process/chars.txt'):
     with open(path, 'r', encoding='utf-8') as f:
@@ -116,7 +116,7 @@ def load_characters(path=r'data_process/chars.txt'):
 
 def run_demo():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--image_folder', default=r'../demo_image',
+    parser.add_argument('--image_folder', default=r'demo_images',
                         help='path to image_folder which contains text images')
     parser.add_argument('--workers', type=int, help='number of data loading workers', default=1)
     parser.add_argument('--batch_size', type=int, default=1, help='input batch size')
