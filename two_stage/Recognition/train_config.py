@@ -23,7 +23,7 @@ parser.add_argument('--valid_data', type=str, default=r'/work/dataset/lmdb/train
                     help='path to validation dataset')
 
 # 多个真实数据比例，使用单个数据集，--select_data='/', --batch_ratio='1'
-parser.add_argument('--select_data', type=str, default='common-special',
+parser.add_argument('--select_data', type=str, default='train_data_full-train_data_min',
                     help='select training data (default is MJ-ST, which means MJ and ST used as training data)')
 parser.add_argument('--batch_ratio', type=str, default='0.9-0.1',
                     help='assign ratio for each selected data in the batch')
@@ -38,9 +38,9 @@ parser.add_argument('--gen_data_ratio', type=str, default='0.5-0.5',
 
 parser.add_argument('--workers', type=int, help='number of data loading workers', default=0)
 parser.add_argument('--batch_size', type=int, default=192, help='input batch size')
-parser.add_argument('--batch_max_length', type=int, default=80, help='maximum-label-length')
+parser.add_argument('--batch_max_length', type=int, default=60, help='maximum-label-length')
 parser.add_argument('--imgH', type=int, default=32, help='the height of the input image')
-parser.add_argument('--imgW', type=int, default=800, help='the width of the input image')
+parser.add_argument('--imgW', type=int, default=600, help='the width of the input image')
 parser.add_argument('--rgb', action='store_false', help='use rgb input')
 parser.add_argument('--PAD', action='store_false', help='whether to keep ratio then pad for image resize')
 parser.add_argument('--character', type=str,
