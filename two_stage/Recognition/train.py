@@ -212,7 +212,7 @@ def train(opt):
                 current_model_log = f'{"Current_accuracy":17s}: {current_accuracy:0.3f}, {"Current_norm_ED":17s}: {current_norm_ED:0.2f}'
 
                 # keep best accuracy model (on valid dataset)
-                if iteration+1 % opt.valInterval*4 == 0:
+                if iteration+1 % opt.valInterval*2 == 0:
                     torch.save(model.state_dict(), f'./saved_models/{opt.exp_name}/step_{opt.valInterval*2}.pth')
 
                 if current_accuracy > best_accuracy:
